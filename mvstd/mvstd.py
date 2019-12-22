@@ -78,5 +78,5 @@ def main():
     ap.add_argument('files', nargs='+', help="List of files")
     args = ap.parse_args()
 
-    for file in args.files:
+    for filename in args.files:
         os.rename(filename, normalize(filename))    
