@@ -28,29 +28,40 @@ def normalize(filename):
   'test-1.txt'
   >>> normalize('another-TEst_file.mp4')
   'another-test-file.mp4'
-  >>> normalize('Linkin Park - In the End (Official Video)-HJCw2w8f23.opus')
+  >>> normalize('Linkin Park - In the End -.opus')
   'linkin-park-in-the-end.opus'
   >>> normalize('2019-10-11 07.08.09[family photo].jpg')
-  '2019-10-11T07.08.09-family-photo.jpg'
+  '2019-10-11T070809-family-photo.jpg'
   >>> normalize('2010-01-12 03.04.05 some nature.jpg')
-  '2010-01-12T03.04.05-some-nature.jpg'
+  '2010-01-12T030405-some-nature.jpg'
+  >>> normalize('2010-01-12T030405-some-nature.jpg')
+  '2010-01-12T030405-some-nature.jpg'
   """
   
-  if is_audio(filename): pass
-
   path = filename.split('/')[:-1]
   filename = filename.split('/')[-1]
 
   filename = filename.lower().replace('_','-').replace(' ','-').replace('–','-')
 
+  d = re.search(
+    "^"
+    "(?P<year>\d{4})[\-]?"
+    "(?P<month>\d{2})[\-]?"
+    "(?P<day>\d{2})[Tt \-]?"
+    "(?P<hour>\d{2})[\.\:\- ]?"
+    "(?P<minute>\d{2})[\.\:\- ]?"
+    "(?P<second>\d{2})[\.\:\- ]?",
+    filename)
+
+  if d:
+      filename = filename.replace(d.group(0),
+        f"{d['year']}-{d['month']}-{d['day']}T{d['hour']}{d['minute']}{d['second']}-")
+
   if is_audio(filename):
     filename = re.sub(r'[\(\[].*?[\)\]]','', filename) # Remove parentheticals
 
+  filename = re.sub('[\[\(\)\]\-]+','-', filename)
   words = filename.split('-')
-
-  words = [re.sub("[A-z0-9]*[0-9]+[A-z]+[0-9]+[A-z0-9]*",'',w) for w in words]
-
-  words = filter(None, words)
 
   filename = '-'.join(words)
 
