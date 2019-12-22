@@ -31,7 +31,9 @@ def normalize(filename):
   >>> normalize('Linkin Park - In the End (Official Video)-HJCw2w8f23.opus')
   'linkin-park-in-the-end.opus'
   >>> normalize('2019-10-11 07.08.09[family photo].jpg')
-  '2019-10-11T070809-family-photo.jpg'
+  '2019-10-11T07.08.09-family-photo.jpg'
+  >>> normalize('2010-01-12 03.04.05 some nature.jpg')
+  '2010-01-12T03.04.05-some-nature.jpg'
   """
   
   if is_audio(filename): pass
