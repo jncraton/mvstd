@@ -30,6 +30,8 @@ def normalize(filename):
   'another-test-file.mp4'
   >>> normalize('Linkin Park - In the End -.opus')
   'linkin-park-in-the-end.opus'
+  >>> normalize('calvin&hobbes.pdf')
+  'calvin-hobbes.pdf'
   >>> normalize('2019-10-11 07.08.09[family photo].jpg')
   '2019-10-11T070809-family-photo.jpg'
   >>> normalize('2010-01-12 03.04.05 some nature.jpg')
@@ -60,7 +62,7 @@ def normalize(filename):
   if is_audio(filename):
     filename = re.sub(r'[\(\[].*?[\)\]]','', filename) # Remove parentheticals
 
-  filename = re.sub('[\[\(\)\]\-]+','-', filename)
+  filename = re.sub('[\[\(\)\]\-\&]+','-', filename)
   words = filename.split('-')
 
   filename = '-'.join(words)
