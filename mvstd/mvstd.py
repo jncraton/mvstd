@@ -38,6 +38,8 @@ def normalize(filename):
   '2010-01-12T030405-some-nature.jpg'
   >>> normalize('2010-01-12T030405-some-nature.jpg')
   '2010-01-12T030405-some-nature.jpg'
+  >>> normalize('2010-01-12 03.04.05.jpg')
+  '2010-01-12T030405.jpg'
   """
   
   path = filename.split('/')[:-1]
@@ -52,7 +54,7 @@ def normalize(filename):
     "(?P<day>\d{2})[Tt \-]?"
     "(?P<hour>\d{2})[\.\:\- ]?"
     "(?P<minute>\d{2})[\.\:\- ]?"
-    "(?P<second>\d{2})[\.\:\- ]?",
+    "(?P<second>\d{2})",
     filename)
 
   if d:
