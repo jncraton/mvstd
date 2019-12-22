@@ -30,7 +30,10 @@ def normalize(filename):
   'another-test-file.mp4'
   >>> normalize('Linkin Park - In the End (Official Video)-HJCw2w8f23.opus')
   'linkin-park-in-the-end.opus'
+  >>> normalize('2019-10-11 07.08.09[family photo].jpg')
+  '2019-10-11T070809-family-photo.jpg'
   """
+  
   if is_audio(filename): pass
 
   path = filename.split('/')[:-1]
