@@ -5,7 +5,7 @@ with open("readme.md", "r") as fh:
 
 setuptools.setup(
     name="mvstd",
-    version="1.0.1",
+    version="1.0.2",
     author="Jon Craton",
     author_email="jon@joncraton.com",
     description="Rename files using a standard format",
