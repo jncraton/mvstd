@@ -19,5 +19,15 @@ Usage
 -----
 
 ```
-usage: mvstd files
+usage: mvstd [-h] [--numeric] [--reverse] files [files ...]
+
+Rename files to a standard format
+
+positional arguments:
+  files          List of files
+
+optional arguments:
+  -h, --help     show this help message and exit
+  --numeric, -n  Rename file numerically after sorting alphabetically
+  --reverse, -r  Reverse sort order prior to renaming
 ```
