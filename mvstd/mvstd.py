@@ -2,6 +2,7 @@ import sys
 import os
 import re
 import argparse
+from math import log10
 
 def has_ext(filename, ext):
   """
@@ -77,10 +78,68 @@ def normalize(filename):
 
   return '/'.join(path + [filename])
 
+def zfill(i, maxval):
+    """
+    Zero fills a number with enough zeroes to ensure all items are the same 
+    length
+
+    >>> zfill(1, 299)
+    '001'
+
+    >>> zfill(0, 999)
+    '000'
+
+    >>> zfill(3, 10)
+    '03'
+
+    >>> zfill(101, 48591)
+    '00101'
+    """
+    
+    return str(i).zfill(int(log10(maxval)+1))
+
+def get_numeric_name(filename, i, maxval):
+    """
+    Returns numeric name for a file
+
+    >>> get_numeric_name("test/img.jpg", 13, 356)
+    'test/013.jpg'
+
+    >>> get_numeric_name("test/next/photo.jpg", 4, 7)
+    'test/next/4.jpg'
+
+    >>> get_numeric_name("test/dir/readme", 113, 9987)
+    'test/dir/0113'
+
+    >>> get_numeric_name("test/doc.md", 2, 14)
+    'test/02.md'
+
+    >>> get_numeric_name("doc.md", 6, 101)
+    '006.md'
+    """
+
+    path = filename.split('/')[:-1]
+    filename = filename.split('/')[-1]
+    extension = filename.split('.')[-1]
+
+    new_name = zfill(i, maxval)
+
+    if extension != filename:
+        new_name += '.' + extension
+
+    return '/'.join(path + [new_name])
+
 def main():
     ap = argparse.ArgumentParser(description='Rename files to a standard format')
     ap.add_argument('files', nargs='+', help="List of files")
+    ap.add_argument('--numeric', '-n', action="store_true", help="Rename file numerically after sorting alphabetically")
+    ap.add_argument('--reverse', '-r', action="store_true", help="Reverse sort order prior to renaming")
     args = ap.parse_args()
 
-    for filename in args.files:
-        os.rename(filename, normalize(filename))    
+    files = sorted(args.files, reverse=args.reverse)
+
+    for i,filename in enumerate(files):
+        if args.numeric:
+            os.rename(filename, get_numeric_name(filename, i, len(files)))
+        else:
+            os.rename(filename, normalize(filename))
