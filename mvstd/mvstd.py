@@ -25,7 +25,7 @@ def is_audio(f):
 
 
 def is_video(f):
-    return has_ext(f, ["mp4", "avi", "mov", "mkv"])
+    return has_ext(f, ["mp4", "avi", "mov", "mkv", "webm"])
 
 
 def is_image(f):
