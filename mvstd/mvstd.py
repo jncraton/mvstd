@@ -68,25 +68,32 @@ def normalize_date(name):
 def normalize(filename):
     """
     >>> normalize('Test 1.txt')
-    'test-1.txt'
+    'Test.1.txt'
     >>> normalize('another-TEst_file.mp4')
-    'another-test-file.mp4'
+    'Another.Test.File.mp4'
     >>> normalize('Linkin Park - In the End -.opus')
-    'linkin-park-in-the-end.opus'
-    >>> normalize('calvin&hobbes.pdf')
-    'calvin-hobbes.pdf'
+    'Linkin.Park.in.the.End.opus'
     >>> normalize('2019-10-11 07.08.09[family photo].jpg')
-    '2019-10-11T070809-family-photo.jpg'
-    >>> normalize('2010-01-12 03.04.05 some nature.jpg')
-    '2010-01-12T030405-some-nature.jpg'
-    >>> normalize('2010-01-12T030405-some-nature.jpg')
-    '2010-01-12T030405-some-nature.jpg'
+    '2019.10.11T070809.Family.Photo.jpg'
+    >>> normalize('2010-01-12 03.04.05 trees and nature.jpg')
+    '2010.01.12T030405.Trees.and.Nature.jpg'
+    >>> normalize('2010-01-12T030405-trees-in-forest.jpg')
+    '2010.01.12T030405.Trees.in.Forest.jpg'
     >>> normalize('2010-01-12 03.04.05.jpg')
-    '2010-01-12T030405.jpg'
+    '2010.01.12T030405.jpg'
+    >>> normalize('calvin&hobbes.pdf')
+    'Calvin.and.Hobbes.pdf'
+    >>> normalize('makefile')
+    'makefile'
+    >>> normalize('my-project.c')
+    'my-project.c'
     """
 
     path = filename.split("/")[:-1]
     filename = filename.split("/")[-1]
+
+    if re.match("(makefile|readme.md|.*.py|.*.c)", filename):
+        return filename
 
     filename = filename.lower().replace("_", "-").replace(" ", "-").replace("–", "-")
 
@@ -95,16 +102,102 @@ def normalize(filename):
     if is_audio(filename):
         filename = re.sub(r"[\(\[].*?[\)\]]", "", filename)  # Remove parentheticals
 
-    filename = re.sub("[\[\(\)\]\-\&]+", "-", filename)
-    words = filename.split("-")
+    filename = filename.replace("&", ".and.")
 
-    filename = "-".join(words)
+    filename = re.sub("[\[\(\)\]\-]+", "-", filename)
+    filename = "-".join(filename.split("-"))  # Remove trailing seps
 
-    filename = re.sub(r"[\'\!\:\,]", "", filename)
+    filename = re.sub(r"[\'\!\:\,]", ".", filename)
 
-    filename = re.sub(r"-+\.+", ".", filename)
+    filename = re.sub(r"[\-\+\.\_ ]+", ".", filename)
 
-    filename = re.sub(r"\-+", "-", filename)
+    parts = filename.split(".")
+    keep_lower = {
+        "this",
+        "upon",
+        "altogether",
+        "whereunto",
+        "across",
+        "between",
+        "and",
+        "if",
+        "as",
+        "over",
+        "above",
+        "afore",
+        "inside",
+        "like",
+        "besides",
+        "on",
+        "atop",
+        "about",
+        "toward",
+        "by",
+        "these",
+        "for",
+        "into",
+        "beforehand",
+        "unlike",
+        "until",
+        "in",
+        "aft",
+        "onto",
+        "to",
+        "vs",
+        "amid",
+        "towards",
+        "afterwards",
+        "notwithstanding",
+        "unto",
+        "while",
+        "next",
+        "including",
+        "thru",
+        "a",
+        "down",
+        "after",
+        "with",
+        "afterward",
+        "or",
+        "those",
+        "but",
+        "whereas",
+        "versus",
+        "without",
+        "off",
+        "among",
+        "because",
+        "some",
+        "against",
+        "before",
+        "around",
+        "of",
+        "under",
+        "that",
+        "except",
+        "at",
+        "beneath",
+        "out",
+        "amongst",
+        "the",
+        "from",
+        "per",
+        "mid",
+        "behind",
+        "along",
+        "outside",
+        "beyond",
+        "up",
+        "past",
+        "through",
+        "beside",
+        "below",
+        "during",
+    }
+
+    parts = [p if p in keep_lower else p.title() for p in parts]
+    parts[-1] = parts[-1].lower()
+    filename = ".".join(parts)
 
     return "/".join(path + [filename])
 
