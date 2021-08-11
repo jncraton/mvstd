@@ -72,6 +72,8 @@ def normalize(filename):
     >>> normalize('another-TEst_file.mp4')
     'Another.Test.File.mp4'
     >>> normalize('Linkin Park - In the End -.opus')
+    'Linkin.Park.In.the.End.opus'
+    >>> normalize('Linkin Park - IN THE END -.opus')
     'Linkin.Park.in.the.End.opus'
     >>> normalize('2019-10-11 07.08.09[family photo].jpg')
     '2019.10.11T070809.Family.Photo.jpg'
@@ -95,8 +97,6 @@ def normalize(filename):
     if re.match("(makefile|readme.md|.*.py|.*.c)", filename):
         return filename
 
-    filename = filename.lower().replace("_", "-").replace(" ", "-").replace("–", "-")
-
     filename = normalize_date(filename)
 
     if is_audio(filename):
@@ -104,12 +104,7 @@ def normalize(filename):
 
     filename = filename.replace("&", ".and.")
 
-    filename = re.sub("[\[\(\)\]\-]+", "-", filename)
-    filename = "-".join(filename.split("-"))  # Remove trailing seps
-
-    filename = re.sub(r"[\'\!\:\,]", ".", filename)
-
-    filename = re.sub(r"[\-\+\.\_ ]+", ".", filename)
+    filename = re.sub(r"[\'\!\:\,\[\(\)\]\-\+\.\_\- ]+", ".", filename)
 
     parts = filename.split(".")
     keep_lower = {
@@ -195,7 +190,7 @@ def normalize(filename):
         "during",
     }
 
-    parts = [p if p in keep_lower else p.title() for p in parts]
+    parts = [p.lower() if p.lower() in keep_lower and p.title() != p else p.title() for p in parts]
     parts[-1] = parts[-1].lower()
     filename = ".".join(parts)
 
