@@ -94,7 +94,7 @@ def normalize(filename):
     path = filename.split("/")[:-1]
     filename = filename.split("/")[-1]
 
-    if re.match("(makefile|readme.md|.*.py|.*.c)", filename):
+    if re.match("(makefile|readme.md|license.md|requirements.txt|.*.py|.*.c)", filename):
         return filename
 
     filename = normalize_date(filename)
