@@ -19,7 +19,7 @@ Usage
 -----
 
 ```
-usage: mvstd [-h] [--numeric] [--reverse] files [files ...]
+usage: mvstd.py [-h] [--numeric] [--reverse] [--scene] files [files ...]
 
 Rename files to a standard format
 
@@ -30,4 +30,5 @@ optional arguments:
   -h, --help     show this help message and exit
   --numeric, -n  Rename file numerically after sorting alphabetically
   --reverse, -r  Reverse sort order prior to renaming
+  --scene, -s    Rename using scene rules
 ```
