@@ -135,6 +135,8 @@ def normalize_scene(filename):
     '2010.01.12T030405.jpg'
     >>> normalize_scene('calvin&hobbes.pdf')
     'Calvin.and.Hobbes.pdf'
+    >>> normalize_scene('THE_MATRIX.mkv')
+    'The.Matrix.mkv'
     >>> normalize_scene('makefile')
     'makefile'
     >>> normalize_scene('my-project.c')
@@ -247,6 +249,7 @@ def normalize_scene(filename):
         for p in parts
     ]
     parts[-1] = parts[-1].lower()
+    parts[0] = parts[0].title()
     filename = ".".join(parts)
 
     return "/".join(path + [filename])
