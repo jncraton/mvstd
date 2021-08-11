@@ -36,6 +36,35 @@ def is_media(f):
     return is_audio(f) or is_video(f) or is_image()
 
 
+def normalize_date(name):
+    """
+    >>> normalize_date("2010-10-20 04.05.06.jpg")
+    '2010-10-20T040506.jpg'
+
+    >>> normalize_date("1999-05-01 11.22.33 name.jpg")
+    '1999-05-01T112233 name.jpg'
+    """
+
+    m = re.search(
+        "^"
+        "(?P<year>\d{4})[\-]?"
+        "(?P<month>\d{2})[\-]?"
+        "(?P<day>\d{2})[Tt \-]?"
+        "(?P<hour>\d{2})[\.\:\- ]?"
+        "(?P<minute>\d{2})[\.\:\- ]?"
+        "(?P<second>\d{2})",
+        name,
+    )
+
+    if m:
+        name = name.replace(
+            m.group(0),
+            f"{m['year']}-{m['month']}-{m['day']}T{m['hour']}{m['minute']}{m['second']}",
+        )
+
+    return name
+
+
 def normalize(filename):
     """
     >>> normalize('Test 1.txt')
@@ -61,22 +90,7 @@ def normalize(filename):
 
     filename = filename.lower().replace("_", "-").replace(" ", "-").replace("–", "-")
 
-    d = re.search(
-        "^"
-        "(?P<year>\d{4})[\-]?"
-        "(?P<month>\d{2})[\-]?"
-        "(?P<day>\d{2})[Tt \-]?"
-        "(?P<hour>\d{2})[\.\:\- ]?"
-        "(?P<minute>\d{2})[\.\:\- ]?"
-        "(?P<second>\d{2})",
-        filename,
-    )
-
-    if d:
-        filename = filename.replace(
-            d.group(0),
-            f"{d['year']}-{d['month']}-{d['day']}T{d['hour']}{d['minute']}{d['second']}-",
-        )
+    filename = normalize_date(filename)
 
     if is_audio(filename):
         filename = re.sub(r"[\(\[].*?[\)\]]", "", filename)  # Remove parentheticals
