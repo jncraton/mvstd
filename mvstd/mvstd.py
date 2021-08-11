@@ -147,7 +147,7 @@ def normalize_scene(filename):
     filename = filename.split("/")[-1]
 
     if re.match(
-        "(makefile|readme.md|license.md|requirements.txt|.*.py|.*.c)", filename
+        "(makefile|readme.md|license.md|requirements.txt|.*.py|.*.c)$", filename
     ):
         return filename
 
