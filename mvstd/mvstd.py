@@ -67,6 +67,56 @@ def normalize_date(name):
 
 def normalize(filename):
     """
+    Normalize to lowercase separated by dashes
+
+    Convert embedded dates to ISO 8601 format
+
+    >>> normalize('Test 1.txt')
+    'test-1.txt'
+    >>> normalize('another-TEst_file.mp4')
+    'another-test-file.mp4'
+    >>> normalize('Linkin Park - In the End -.opus')
+    'linkin-park-in-the-end.opus'
+    >>> normalize('calvin&hobbes.pdf')
+    'calvin-hobbes.pdf'
+    >>> normalize('2019-10-11 07.08.09[family photo].jpg')
+    '2019-10-11T070809-family-photo.jpg'
+    >>> normalize('2010-01-12 03.04.05 some nature.jpg')
+    '2010-01-12T030405-some-nature.jpg'
+    >>> normalize('2010-01-12T030405-some-nature.jpg')
+    '2010-01-12T030405-some-nature.jpg'
+    >>> normalize('2010-01-12 03.04.05.jpg')
+    '2010-01-12T030405.jpg'
+    """
+
+    path = filename.split("/")[:-1]
+    filename = filename.split("/")[-1]
+
+    filename = filename.lower().replace("_", "-").replace(" ", "-").replace("–", "-")
+
+    filename = normalize_date(filename)
+
+    if is_audio(filename):
+        filename = re.sub(r"[\(\[].*?[\)\]]", "", filename)  # Remove parentheticals
+
+    filename = re.sub("[\[\(\)\]\-\&]+", "-", filename)
+    words = filename.split("-")
+
+    filename = "-".join(words)
+
+    filename = re.sub(r"[\'\!\:\,]", "", filename)
+
+    filename = re.sub(r"-+\.+", ".", filename)
+
+    filename = re.sub(r"\-+", "-", filename)
+
+    return "/".join(path + [filename])
+
+
+def normalize_scene(filename):
+    """
+    Normalize a file name roughly following scene rules
+
     >>> normalize('Test 1.txt')
     'Test.1.txt'
     >>> normalize('another-TEst_file.mp4')
