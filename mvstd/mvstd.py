@@ -117,27 +117,27 @@ def normalize_scene(filename):
     """
     Normalize a file name roughly following scene rules
 
-    >>> normalize('Test 1.txt')
+    >>> normalize_scene('Test 1.txt')
     'Test.1.txt'
-    >>> normalize('another-TEst_file.mp4')
+    >>> normalize_scene('another-TEst_file.mp4')
     'Another.Test.File.mp4'
-    >>> normalize('Linkin Park - In the End -.opus')
+    >>> normalize_scene('Linkin Park - In the End -.opus')
     'Linkin.Park.In.the.End.opus'
-    >>> normalize('Linkin Park - IN THE END -.opus')
+    >>> normalize_scene('Linkin Park - IN THE END -.opus')
     'Linkin.Park.in.the.End.opus'
-    >>> normalize('2019-10-11 07.08.09[family photo].jpg')
+    >>> normalize_scene('2019-10-11 07.08.09[family photo].jpg')
     '2019.10.11T070809.Family.Photo.jpg'
-    >>> normalize('2010-01-12 03.04.05 trees and nature.jpg')
+    >>> normalize_scene('2010-01-12 03.04.05 trees and nature.jpg')
     '2010.01.12T030405.Trees.and.Nature.jpg'
-    >>> normalize('2010-01-12T030405-trees-in-forest.jpg')
+    >>> normalize_scene('2010-01-12T030405-trees-in-forest.jpg')
     '2010.01.12T030405.Trees.in.Forest.jpg'
-    >>> normalize('2010-01-12 03.04.05.jpg')
+    >>> normalize_scene('2010-01-12 03.04.05.jpg')
     '2010.01.12T030405.jpg'
-    >>> normalize('calvin&hobbes.pdf')
+    >>> normalize_scene('calvin&hobbes.pdf')
     'Calvin.and.Hobbes.pdf'
-    >>> normalize('makefile')
+    >>> normalize_scene('makefile')
     'makefile'
-    >>> normalize('my-project.c')
+    >>> normalize_scene('my-project.c')
     'my-project.c'
     """
 
