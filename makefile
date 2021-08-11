@@ -20,6 +20,7 @@ upload:
 	python3 -m twine upload dist/*
 
 clean:
+	rm -rf tmp
 	rm -rf mvstd.egg-info
 	rm -rf mvstd/__pycache__
 	rm -rf dist
