@@ -94,7 +94,9 @@ def normalize(filename):
     path = filename.split("/")[:-1]
     filename = filename.split("/")[-1]
 
-    if re.match("(makefile|readme.md|license.md|requirements.txt|.*.py|.*.c)", filename):
+    if re.match(
+        "(makefile|readme.md|license.md|requirements.txt|.*.py|.*.c)", filename
+    ):
         return filename
 
     filename = normalize_date(filename)
@@ -144,8 +146,8 @@ def normalize(filename):
         "afterwards",
         "notwithstanding",
         "unto",
-        "while",
         "next",
+        "while",
         "including",
         "thru",
         "a",
@@ -190,7 +192,10 @@ def normalize(filename):
         "during",
     }
 
-    parts = [p.lower() if p.lower() in keep_lower and p.title() != p else p.title() for p in parts]
+    parts = [
+        p.lower() if p.lower() in keep_lower and p.title() != p else p.title()
+        for p in parts
+    ]
     parts[-1] = parts[-1].lower()
     filename = ".".join(parts)
 
