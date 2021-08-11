@@ -4,83 +4,100 @@ import re
 import argparse
 from math import log10
 
+
 def has_ext(filename, ext):
-  """
-  >>> has_ext('test.mp3',['opus','mp3','aac'])
-  True
-  >>> has_ext('test.mp4',['opus','mp3','aac'])
-  False
-  >>> has_ext('test.opus.gz',['opus','mp3','aac'])
-  False
-  >>> has_ext('test.1.OPUS',['opus','mp3','aac'])
-  True
-  """
+    """
+    >>> has_ext('test.mp3',['opus','mp3','aac'])
+    True
+    >>> has_ext('test.mp4',['opus','mp3','aac'])
+    False
+    >>> has_ext('test.opus.gz',['opus','mp3','aac'])
+    False
+    >>> has_ext('test.1.OPUS',['opus','mp3','aac'])
+    True
+    """
 
-  return filename.split('.')[-1].lower() in ext
+    return filename.split(".")[-1].lower() in ext
 
-def is_audio(f): return has_ext(f, ['opus','mp3','aac','m4a','ogg'])
-def is_video(f): return has_ext(f, ['mp4','avi','mov','mkv'])
-def is_image(f): return has_ext(f, ['png','jpeg','jpg'])
-def is_media(f): return is_audio(f) or is_video(f) or is_image()
+
+def is_audio(f):
+    return has_ext(f, ["opus", "mp3", "aac", "m4a", "ogg"])
+
+
+def is_video(f):
+    return has_ext(f, ["mp4", "avi", "mov", "mkv"])
+
+
+def is_image(f):
+    return has_ext(f, ["png", "jpeg", "jpg"])
+
+
+def is_media(f):
+    return is_audio(f) or is_video(f) or is_image()
+
 
 def normalize(filename):
-  """
-  >>> normalize('Test 1.txt')
-  'test-1.txt'
-  >>> normalize('another-TEst_file.mp4')
-  'another-test-file.mp4'
-  >>> normalize('Linkin Park - In the End -.opus')
-  'linkin-park-in-the-end.opus'
-  >>> normalize('calvin&hobbes.pdf')
-  'calvin-hobbes.pdf'
-  >>> normalize('2019-10-11 07.08.09[family photo].jpg')
-  '2019-10-11T070809-family-photo.jpg'
-  >>> normalize('2010-01-12 03.04.05 some nature.jpg')
-  '2010-01-12T030405-some-nature.jpg'
-  >>> normalize('2010-01-12T030405-some-nature.jpg')
-  '2010-01-12T030405-some-nature.jpg'
-  >>> normalize('2010-01-12 03.04.05.jpg')
-  '2010-01-12T030405.jpg'
-  """
-  
-  path = filename.split('/')[:-1]
-  filename = filename.split('/')[-1]
+    """
+    >>> normalize('Test 1.txt')
+    'test-1.txt'
+    >>> normalize('another-TEst_file.mp4')
+    'another-test-file.mp4'
+    >>> normalize('Linkin Park - In the End -.opus')
+    'linkin-park-in-the-end.opus'
+    >>> normalize('calvin&hobbes.pdf')
+    'calvin-hobbes.pdf'
+    >>> normalize('2019-10-11 07.08.09[family photo].jpg')
+    '2019-10-11T070809-family-photo.jpg'
+    >>> normalize('2010-01-12 03.04.05 some nature.jpg')
+    '2010-01-12T030405-some-nature.jpg'
+    >>> normalize('2010-01-12T030405-some-nature.jpg')
+    '2010-01-12T030405-some-nature.jpg'
+    >>> normalize('2010-01-12 03.04.05.jpg')
+    '2010-01-12T030405.jpg'
+    """
 
-  filename = filename.lower().replace('_','-').replace(' ','-').replace('–','-')
+    path = filename.split("/")[:-1]
+    filename = filename.split("/")[-1]
 
-  d = re.search(
-    "^"
-    "(?P<year>\d{4})[\-]?"
-    "(?P<month>\d{2})[\-]?"
-    "(?P<day>\d{2})[Tt \-]?"
-    "(?P<hour>\d{2})[\.\:\- ]?"
-    "(?P<minute>\d{2})[\.\:\- ]?"
-    "(?P<second>\d{2})",
-    filename)
+    filename = filename.lower().replace("_", "-").replace(" ", "-").replace("–", "-")
 
-  if d:
-      filename = filename.replace(d.group(0),
-        f"{d['year']}-{d['month']}-{d['day']}T{d['hour']}{d['minute']}{d['second']}-")
+    d = re.search(
+        "^"
+        "(?P<year>\d{4})[\-]?"
+        "(?P<month>\d{2})[\-]?"
+        "(?P<day>\d{2})[Tt \-]?"
+        "(?P<hour>\d{2})[\.\:\- ]?"
+        "(?P<minute>\d{2})[\.\:\- ]?"
+        "(?P<second>\d{2})",
+        filename,
+    )
 
-  if is_audio(filename):
-    filename = re.sub(r'[\(\[].*?[\)\]]','', filename) # Remove parentheticals
+    if d:
+        filename = filename.replace(
+            d.group(0),
+            f"{d['year']}-{d['month']}-{d['day']}T{d['hour']}{d['minute']}{d['second']}-",
+        )
 
-  filename = re.sub('[\[\(\)\]\-\&]+','-', filename)
-  words = filename.split('-')
+    if is_audio(filename):
+        filename = re.sub(r"[\(\[].*?[\)\]]", "", filename)  # Remove parentheticals
 
-  filename = '-'.join(words)
+    filename = re.sub("[\[\(\)\]\-\&]+", "-", filename)
+    words = filename.split("-")
 
-  filename = re.sub(r'[\'\!\:\,]','', filename)
+    filename = "-".join(words)
 
-  filename = re.sub(r'-+\.+','.', filename)
+    filename = re.sub(r"[\'\!\:\,]", "", filename)
 
-  filename = re.sub(r'\-+','-', filename)
+    filename = re.sub(r"-+\.+", ".", filename)
 
-  return '/'.join(path + [filename])
+    filename = re.sub(r"\-+", "-", filename)
+
+    return "/".join(path + [filename])
+
 
 def zfill(i, maxval):
     """
-    Zero fills a number with enough zeroes to ensure all items are the same 
+    Zero fills a number with enough zeroes to ensure all items are the same
     length
 
     >>> zfill(1, 299)
@@ -95,8 +112,9 @@ def zfill(i, maxval):
     >>> zfill(101, 48591)
     '00101'
     """
-    
-    return str(i).zfill(int(log10(maxval)+1))
+
+    return str(i).zfill(int(log10(maxval) + 1))
+
 
 def get_numeric_name(filename, i, maxval):
     """
@@ -118,27 +136,38 @@ def get_numeric_name(filename, i, maxval):
     '006.md'
     """
 
-    path = filename.split('/')[:-1]
-    filename = filename.split('/')[-1]
-    extension = filename.split('.')[-1]
+    path = filename.split("/")[:-1]
+    filename = filename.split("/")[-1]
+    extension = filename.split(".")[-1]
 
     new_name = zfill(i, maxval)
 
     if extension != filename:
-        new_name += '.' + extension
+        new_name += "." + extension
 
-    return '/'.join(path + [new_name])
+    return "/".join(path + [new_name])
+
 
 def main():
-    ap = argparse.ArgumentParser(description='Rename files to a standard format')
-    ap.add_argument('files', nargs='+', help="List of files")
-    ap.add_argument('--numeric', '-n', action="store_true", help="Rename file numerically after sorting alphabetically")
-    ap.add_argument('--reverse', '-r', action="store_true", help="Reverse sort order prior to renaming")
+    ap = argparse.ArgumentParser(description="Rename files to a standard format")
+    ap.add_argument("files", nargs="+", help="List of files")
+    ap.add_argument(
+        "--numeric",
+        "-n",
+        action="store_true",
+        help="Rename file numerically after sorting alphabetically",
+    )
+    ap.add_argument(
+        "--reverse",
+        "-r",
+        action="store_true",
+        help="Reverse sort order prior to renaming",
+    )
     args = ap.parse_args()
 
     files = sorted(args.files, reverse=args.reverse)
 
-    for i,filename in enumerate(files):
+    for i, filename in enumerate(files):
         if args.numeric:
             os.rename(filename, get_numeric_name(filename, i, len(files)))
         else:
