@@ -320,6 +320,12 @@ def main():
         action="store_true",
         help="Reverse sort order prior to renaming",
     )
+    ap.add_argument(
+        "--scene",
+        "-s",
+        action="store_true",
+        help="Rename using scene rules",
+    )
     args = ap.parse_args()
 
     files = sorted(args.files, reverse=args.reverse)
@@ -328,4 +334,7 @@ def main():
         if args.numeric:
             os.rename(filename, get_numeric_name(filename, i, len(files)))
         else:
-            os.rename(filename, normalize(filename))
+            os.rename(filename, normalize_scene(filename) if args.scene else normalize(filename))
+
+if __name__ == '__main__':
+    main()
