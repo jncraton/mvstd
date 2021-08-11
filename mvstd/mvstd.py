@@ -47,9 +47,9 @@ def normalize_date(name):
 
     m = re.search(
         "^"
-        "(?P<year>\d{4})[\-]?"
-        "(?P<month>\d{2})[\-]?"
-        "(?P<day>\d{2})[Tt \-]?"
+        "(?P<year>\d{4})[\-\.]?"
+        "(?P<month>\d{2})[\-\.]?"
+        "(?P<day>\d{2})[Tt \-\.]?"
         "(?P<hour>\d{2})[\.\:\- ]?"
         "(?P<minute>\d{2})[\.\:\- ]?"
         "(?P<second>\d{2})",
