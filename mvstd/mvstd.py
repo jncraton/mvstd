@@ -59,7 +59,8 @@ def normalize_date(name):
     if m:
         name = name.replace(
             m.group(0),
-            f"{m['year']}-{m['month']}-{m['day']}T{m['hour']}{m['minute']}{m['second']}",
+            f"{m['year']}-{m['month']}-{m['day']}"
+            f"T{m['hour']}{m['minute']}{m['second']}",
         )
 
     return name
