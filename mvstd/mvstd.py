@@ -338,7 +338,11 @@ def main():
         if args.numeric:
             os.rename(filename, get_numeric_name(filename, i, len(files)))
         else:
-            os.rename(filename, normalize_scene(filename) if args.scene else normalize(filename))
+            os.rename(
+                filename,
+                normalize_scene(filename) if args.scene else normalize(filename),
+            )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
