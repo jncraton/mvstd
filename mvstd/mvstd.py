@@ -46,13 +46,13 @@ def normalize_date(name):
     """
 
     m = re.search(
-        "^"
-        "(?P<year>\d{4})[\-\.]?"
-        "(?P<month>\d{2})[\-\.]?"
-        "(?P<day>\d{2})[Tt \-\.]?"
-        "(?P<hour>\d{2})[\.\:\- ]?"
-        "(?P<minute>\d{2})[\.\:\- ]?"
-        "(?P<second>\d{2})",
+        r"^"
+        r"(?P<year>\d{4})[\-\.]?"
+        r"(?P<month>\d{2})[\-\.]?"
+        r"(?P<day>\d{2})[Tt \-\.]?"
+        r"(?P<hour>\d{2})[\.\:\- ]?"
+        r"(?P<minute>\d{2})[\.\:\- ]?"
+        r"(?P<second>\d{2})",
         name,
     )
 
@@ -99,7 +99,7 @@ def normalize(filename):
     if is_audio(filename):
         filename = re.sub(r"[\(\[].*?[\)\]]", "", filename)  # Remove parentheticals
 
-    filename = re.sub("[\[\(\)\]\-\&]+", "-", filename)
+    filename = re.sub(r"[\[\(\)\]\-\&]+", "-", filename)
     words = filename.split("-")
 
     filename = "-".join(words)
