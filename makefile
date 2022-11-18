@@ -15,6 +15,9 @@ test:
 	test -f "tmp/the-matrix.mp4"
 	test -f "tmp/1977-10-23T001122-orchid-petals.jpg"
 
+lint:
+	flake8 --max-line-length 88 mvstd/mvstd.py
+
 upload:
 	python3 setup.py sdist bdist_wheel
 	python3 -m twine upload dist/*
